@@ -1,3 +1,5 @@
+"""hey YOOO don't forget to test in case of more n_general_nofire"""
+
 """ 
 BEST PARAMETERS:
 k1_nofire_per_fire: 20
