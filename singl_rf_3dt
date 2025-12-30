@@ -1,0 +1,279 @@
+"""
+BEST PARAMETERS:
+k1_nofire_per_fire: 8
+k2_fire_per_proto: 4
+k3_nofire_per_proto: 5
+n_distant_nofire: 871
+n_general_nofire: 6816
+
+CONFUSION MATRIX (TEST)
+[[20689  3311]
+ [  209  1433]]
+
+CLASSIFICATION REPORT (TEST)
+              precision    recall  f1-score   support
+
+           0     0.9900    0.8620    0.9216     24000
+           1     0.3021    0.8727    0.4488      1642
+
+    accuracy                         0.8627     25642
+   macro avg     0.6460    0.8674    0.6852     25642
+weighted avg     0.9459    0.8627    0.8913     25642
+
+Recall (Fire): 0.8727161997563947
+F1-score     : 0.4487942373943
+ROC-AUC      : 0.9308942727365002
+
+Model saved as fire_detection_3tree_bayes_recall.pkl
+PS D:\S3\data_mining>
+"""
+
+
+
+
+
+
+
+import numpy as np
+import pandas as pd
+import faiss
+import joblib
+
+from sklearn.neighbors import NearestNeighbors
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import (
+    confusion_matrix,
+    classification_report,
+    recall_score,
+    f1_score,
+    roc_auc_score
+)
+
+from skopt import gp_minimize
+from skopt.space import Integer
+from skopt.utils import use_named_args
+
+# ============================================================
+# LOAD DATA
+# ============================================================
+
+data = pd.read_csv(r"D:\S3\data_mining\ML\data_set1_disaugmented_diverse.csv")
+
+y = data['is_fire']
+X = data.drop(columns=['is_fire'])
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, stratify=y, random_state=42
+)
+
+# ============================================================
+# TRAIN / VALIDATION SPLIT (CRITICAL)
+# ============================================================
+
+X_tr, X_val, y_tr, y_val = train_test_split(
+    X_train,
+    y_train,
+    test_size=0.2,
+    stratify=y_train,
+    random_state=42
+)
+
+X_tr_fire = X_tr[y_tr == 1].reset_index(drop=True)
+X_tr_nofire = X_tr[y_tr == 0].reset_index(drop=True)
+
+X_train_fire = X_train[y_train == 1].reset_index(drop=True)
+X_train_nofire = X_train[y_train == 0].reset_index(drop=True)
+
+print("Train fire samples:", len(X_tr_fire))
+print("Train no-fire samples:", len(X_tr_nofire))
+
+# ============================================================
+# FAISS DISTANT POINT SELECTION
+# ============================================================
+
+def get_distant_points(X_df, n_points):
+    if n_points >= len(X_df):
+        return X_df.copy()
+
+    X = np.ascontiguousarray(X_df.values.astype("float32"))
+    faiss.normalize_L2(X)
+
+    selected = [np.random.randint(len(X))]
+    dist = 1 - X @ X[selected[0]]
+
+    for _ in range(1, n_points):
+        idx = np.argmax(dist)
+        selected.append(idx)
+        new_dist = 1 - X @ X[idx]
+        dist = np.minimum(dist, new_dist)
+
+    return X_df.iloc[selected].reset_index(drop=True)
+
+# ============================================================
+# BUILD SUB-DATASETS
+# ============================================================
+
+def build_subdatasets(
+    X_fire,
+    X_nofire,
+    k1_nofire_per_fire,
+    k2_fire_per_proto,
+    k3_nofire_per_proto,
+    n_distant_nofire,
+    n_general_nofire
+):
+    knn_fire = NearestNeighbors(n_neighbors=20).fit(X_fire.values)
+    knn_nofire = NearestNeighbors(n_neighbors=20).fit(X_nofire.values)
+
+    # -------- Dataset 1: Boundary-focused --------
+    _, idx_nf = knn_nofire.kneighbors(
+        X_fire.values, n_neighbors=k1_nofire_per_fire
+    )
+    nf_neighbors = X_nofire.iloc[np.unique(idx_nf.flatten())]
+
+    X1 = pd.concat([X_fire, nf_neighbors])
+    y1 = np.concatenate([np.ones(len(X_fire)), np.zeros(len(nf_neighbors))])
+
+    # -------- Dataset 2: Prototype-based --------
+    proto_nf = get_distant_points(X_nofire, n_distant_nofire)
+
+    fire_list, nofire_list = [], []
+    for _, proto in proto_nf.iterrows():
+        _, idx_f = knn_fire.kneighbors([proto.values], k2_fire_per_proto)
+        _, idx_nf = knn_nofire.kneighbors([proto.values], k3_nofire_per_proto)
+        fire_list.append(X_fire.iloc[idx_f[0]])
+        nofire_list.append(X_nofire.iloc[idx_nf[0]])
+
+    X2_fire = pd.concat(fire_list).drop_duplicates()
+    X2_nofire = pd.concat(nofire_list).drop_duplicates()
+
+    X2 = pd.concat([X2_fire, X2_nofire])
+    y2 = np.concatenate([np.ones(len(X2_fire)), np.zeros(len(X2_nofire))])
+
+    # -------- Dataset 3: Global contrast --------
+    distant_nf = get_distant_points(X_nofire, n_general_nofire)
+
+    X3 = pd.concat([X_fire, distant_nf])
+    y3 = np.concatenate([np.ones(len(X_fire)), np.zeros(len(distant_nf))])
+
+    return (X1, y1), (X2, y2), (X3, y3)
+
+# ============================================================
+# TRAIN 3 REGULARIZED TREES
+# ============================================================
+
+def train_three_trees(datasets):
+    trees = []
+    for i, (X, y) in enumerate(datasets):
+        tree = DecisionTreeClassifier(
+            max_depth=15,
+            min_samples_split=30,
+            min_samples_leaf=5,
+            class_weight="balanced",
+            random_state=42
+        )
+        tree.fit(X, y)
+        trees.append(tree)
+    return trees
+
+# ============================================================
+# ENSEMBLE PREDICTION
+# ============================================================
+
+def predict_proba_ensemble(trees, X):
+    probs = np.zeros(len(X))
+    for tree in trees:
+        probs += tree.predict_proba(X)[:, 1]
+    return probs / len(trees)
+
+# ============================================================
+# BAYESIAN OPTIMIZATION (RECALL-FOCUSED)
+# ============================================================
+
+space = [
+    Integer(3, 10, name="k1_nofire_per_fire"),
+    Integer(2, 6, name="k2_fire_per_proto"),
+    Integer(5, 30, name="k3_nofire_per_proto"),
+    Integer(400, 900, name="n_distant_nofire"),
+    Integer(4000, 9000, name="n_general_nofire")
+]
+
+@use_named_args(space)
+def objective(**params):
+    datasets = build_subdatasets(
+        X_tr_fire,
+        X_tr_nofire,
+        **params
+    )
+
+    trees = train_three_trees(datasets)
+
+    y_val_prob = predict_proba_ensemble(trees, X_val)
+    y_val_pred = (y_val_prob >= 0.5).astype(int)
+
+    recall = recall_score(y_val, y_val_pred, pos_label=1)
+
+    print(f"Validation Recall: {recall:.4f} | {params}")
+
+    return -recall   # MINIMIZE negative recall
+
+print("\nRunning Bayesian Optimization (Recall-focused)...\n")
+
+result = gp_minimize(
+    objective,
+    space,
+    n_calls=25,
+    random_state=42,
+    verbose=True
+)
+
+best_params = dict(zip([s.name for s in space], result.x))
+
+print("\nBEST PARAMETERS:")
+for k, v in best_params.items():
+    print(f"{k}: {v}")
+
+# ============================================================
+# FINAL TRAINING (FULL TRAIN SET)
+# ============================================================
+
+final_datasets = build_subdatasets(
+    X_train_fire,
+    X_train_nofire,
+    **best_params
+)
+
+final_trees = train_three_trees(final_datasets)
+
+# ============================================================
+# TEST EVALUATION
+# ============================================================
+
+y_test_prob = predict_proba_ensemble(final_trees, X_test)
+y_test_pred = (y_test_prob >= 0.5).astype(int)
+
+print("\nCONFUSION MATRIX (TEST)")
+print(confusion_matrix(y_test, y_test_pred))
+
+print("\nCLASSIFICATION REPORT (TEST)")
+print(classification_report(y_test, y_test_pred, digits=4))
+
+print("Recall (Fire):", recall_score(y_test, y_test_pred))
+print("F1-score     :", f1_score(y_test, y_test_pred))
+print("ROC-AUC      :", roc_auc_score(y_test, y_test_prob))
+
+# ============================================================
+# SAVE MODEL
+# ============================================================
+
+joblib.dump(
+    {
+        "trees": final_trees,
+        "best_params": best_params,
+        "threshold": 0.5
+    },
+    "fire_detection_3tree_bayes_recall.pkl"
+)
+
+print("\nModel saved as fire_detection_3tree_bayes_recall.pkl")
