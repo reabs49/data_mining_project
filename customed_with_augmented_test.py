@@ -34,13 +34,12 @@ weighted avg     0.9501    0.9486    0.9492    130810
 
 
 
-
 import numpy as np
 import pandas as pd
 import faiss
 import time
 import joblib
-
+from sklearn.model_selection import train_test_split
 from sklearn.neighbors import NearestNeighbors
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
@@ -62,6 +61,11 @@ y_train = pd.read_csv(r"D:\S3\data_mining\data\y_train.csv").squeeze()
 
 X_test = pd.read_csv(r"D:\S3\data_mining\data\X_test.csv")
 y_test = pd.read_csv(r"D:\S3\data_mining\data\y_test.csv").squeeze()
+
+"""data = pd.read_csv(r"D:\S3\data_mining\ML\data_set1_disaugmented_diverse.csv")
+label = data['is_fire']
+data = data.drop(columns=['is_fire'])
+X_train , X_test , y_train , y_test = train_test_split(data , label , test_size=0.3 , random_state=42)"""
 
 print("Train size:", X_train.shape)
 print("Test size :", X_test.shape)
@@ -176,9 +180,9 @@ space = [
     Integer(100, 900, name='n_distant_nofire'),
     Integer(2000, 7000, name='n_general_nofire'),
     Integer(100, 300, name='n_trees'),
-    Integer(5, 25, name='max_depth'),
-    Integer(2, 15, name='min_samples_split'),
-    Integer(1, 5, name='min_samples_leaf')
+    Integer(6, 16, name='max_depth'),
+    Integer(10, 50, name='min_samples_split'),
+    Integer(5, 20, name='min_samples_leaf')
 ]
 
 # ============================================================
