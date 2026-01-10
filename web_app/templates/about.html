@@ -1,0 +1,424 @@
+<!-- templates/about.html -->
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>À propos - ForestGuard AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .about-container {
+            min-height: 100vh;
+            padding: 120px 20px 60px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .about-content {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about-hero {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .about-hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+        }
+
+        .about-section {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 140, 0, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            transition: all 0.4s;
+        }
+
+        .about-section:hover {
+            border-color: var(--fire-orange);
+            box-shadow: 0 20px 60px rgba(255, 140, 0, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .about-section h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--fire-orange);
+            font-size: 2rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .about-section p {
+            color: #ccc;
+            line-height: 1.8;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .tech-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 140, 0, 0.1);
+            transition: all 0.3s;
+        }
+
+        .tech-item:hover {
+            border-color: var(--fire-orange);
+            transform: scale(1.05);
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .model-explanation {
+            background: linear-gradient(135deg, rgba(255, 59, 59, 0.1), rgba(255, 140, 0, 0.1));
+            padding: 30px;
+            border-radius: 15px;
+            border-left: 4px solid var(--fire-orange);
+            margin: 20px 0;
+        }
+
+        .model-explanation h3 {
+            color: var(--fire-orange);
+            font-family: 'Orbitron', sans-serif;
+            margin-bottom: 15px;
+        }
+
+        .parameters-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .parameter-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 3px solid var(--fire-orange);
+        }
+
+        .parameter-item strong {
+            color: var(--fire-orange);
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .about-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://i.pinimg.com/736x/da/69/67/da69671ab432d9a0c08ff7108ccee521.jpg') center/cover no-repeat;
+            filter: brightness(0.3);
+            z-index: -1;
+        }
+
+        .about-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(10, 10, 10, 0.5) 0%, rgba(10, 10, 10, 0.9) 100%);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/" class="nav-logo">🔥 ForestGuard AI</a>
+        <ul class="nav-links">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/predict">Prédiction</a></li>
+            <li><a href="/about">À propos</a></li>
+        </ul>
+    </nav>
+
+    <div class="fire-particles" id="particles"></div>
+
+    <div class="about-container">
+        <div class="about-bg"></div>
+        <div class="about-content">
+            <div class="about-hero">
+                <h1>À Propos de ForestGuard AI</h1>
+                <p class="subtitle">Intelligence Artificielle au Service de la Protection Forestière</p>
+            </div>
+
+            <div class="about-section">
+                <h2>🎯 Notre Mission</h2>
+                <p>
+                    ForestGuard AI est une plateforme innovante de détection précoce des risques d'incendie de forêt,
+                    développée pour protéger nos écosystèmes forestiers grâce à l'intelligence artificielle.
+                </p>
+                <p>
+                    Notre système utilise un modèle Random Forest optimisé pour analyser en temps réel
+                    les conditions météorologiques et environnementales, permettant d'identifier les zones
+                    à haut risque avant qu'un incendie ne se déclare.
+                </p>
+            </div>
+
+            <div class="about-section">
+                <h2>🤖 Technologie IA</h2>
+
+                <div class="model-explanation">
+                    <h3>Modèle Random Forest Optimisé</h3>
+                    <p>
+                        Notre modèle Random Forest utilise un ensemble d'arbres de décision pour
+                        une précision maximale dans la détection des risques d'incendie.
+                    </p>
+                </div>
+
+                <div
+                    style="background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 15px; margin-top: 30px;">
+                    <h3 style="color: var(--fire-orange); margin-bottom: 15px;">🌲 Random Forest</h3>
+                    <p>
+                        Ensemble d'arbres de décision qui analysent simultanément les 20 paramètres.
+                        Excellente capacité à gérer des données complexes et à identifier les
+                        patterns non-linéaires dans les conditions d'incendie. Le modèle a été
+                        optimisé pour maximiser la précision et le recall.
+                    </p>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h2>📊 Paramètres Analysés</h2>
+                <p>Notre système prend en compte 20 paramètres clés répartis en 4 catégories pour évaluer le risque
+                    d'incendie:</p>
+
+                <div class="parameters-list">
+                    <!-- Propriétés du Sol (10 paramètres) -->
+                    <div class="parameter-item">
+                        <strong>🪨 COARSE</strong>
+                        <p>Texture grossière du sol - particules de grande taille</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🧱 CLAY</strong>
+                        <p>Pourcentage d'argile dans le sol</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>📊 TEXTURE_USDA</strong>
+                        <p>Classification de texture selon les standards USDA</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>⚡ CEC_CLAY</strong>
+                        <p>Capacité d'échange cationique de l'argile</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🔋 TEB</strong>
+                        <p>Bases échangeables totales du sol</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🧪 ALUM_SAT</strong>
+                        <p>Saturation en aluminium du sol</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>💧 ESP</strong>
+                        <p>Pourcentage de sodium échangeable</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🌿 TCARBON_EQ</strong>
+                        <p>Carbone total équivalent - matière organique</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>⚪ GYPSUM</strong>
+                        <p>Contenu en gypse du sol</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>⚡ ELEC_COND</strong>
+                        <p>Conductivité électrique du sol</p>
+                    </div>
+
+                    <!-- Données Géographiques (1 paramètre) -->
+                    <div class="parameter-item">
+                        <strong>⛰️ Altitude</strong>
+                        <p>Élévation du terrain en mètres</p>
+                    </div>
+
+                    <!-- Données Climatiques (6 paramètres) -->
+                    <div class="parameter-item">
+                        <strong>❄️ Tmin Cool/Wet</strong>
+                        <p>Température minimale en saison froide et humide</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🌞 Tmax Hot/Dry</strong>
+                        <p>Température maximale en saison chaude et sèche</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🌸 Tmax Spring</strong>
+                        <p>Température maximale durant la transition printanière</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>☀️ Prec Hot/Dry</strong>
+                        <p>Précipitations en saison chaude et sèche</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🌧️ Prec Cool/Wet</strong>
+                        <p>Précipitations en saison froide et humide</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>🌱 Prec Spring</strong>
+                        <p>Précipitations durant la transition printanière</p>
+                    </div>
+
+                    <!-- Classification SOTER (3 paramètres) -->
+                    <div class="parameter-item">
+                        <strong>🪨 TEXTURE_SOTER_C</strong>
+                        <p>Classification SOTER - Texture grossière</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>💎 TEXTURE_SOTER_F</strong>
+                        <p>Classification SOTER - Texture fine</p>
+                    </div>
+
+                    <div class="parameter-item">
+                        <strong>⚖️ TEXTURE_SOTER_M</strong>
+                        <p>Classification SOTER - Texture moyenne</p>
+                    </div>
+                </div>
+
+                <div
+                    style="margin-top: 40px; padding: 25px; background: rgba(255, 140, 0, 0.1); border-radius: 15px; border-left: 4px solid var(--fire-orange);">
+                    <h3 style="color: var(--fire-orange); margin-bottom: 15px;">🎯 Catégories de Paramètres</h3>
+                    <ul style="list-style: none; padding: 0; color: #ccc; line-height: 2;">
+                        <li><strong style="color: var(--fire-orange);">🌍 Propriétés du Sol (10)</strong> -
+                            Caractéristiques physico-chimiques du terrain</li>
+                        <li><strong style="color: var(--fire-orange);">📍 Géographie (1)</strong> - Position
+                            altitudinale</li>
+                        <li><strong style="color: var(--fire-orange);">🌡️ Climat (6)</strong> - Températures et
+                            précipitations saisonnières</li>
+                        <li><strong style="color: var(--fire-orange);">🔬 Classification SOTER (3)</strong> - Texture
+                            granulométrique du sol</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h2>⚙️ Stack Technique</h2>
+                <div class="tech-stack">
+                    <div class="tech-item">
+                        <div class="tech-icon">🐍</div>
+                        <strong>Python</strong>
+                        <p>Backend & IA</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🌶️</div>
+                        <strong>Flask</strong>
+                        <p>Framework Web</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🧠</div>
+                        <strong>Scikit-learn</strong>
+                        <p>Machine Learning</p>
+                    </div>
+                    <div class="tech-item">
+                        <div class="tech-icon">🎨</div>
+                        <strong>HTML/CSS/JS</strong>
+                        <p>Interface Moderne</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-section">
+                <h2>🎯 Niveaux de Risque</h2>
+                <div style="display: grid; gap: 15px; margin-top: 20px;">
+                    <div
+                        style="background: rgba(76, 175, 80, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #4caf50;">
+                        <strong style="color: #4caf50; font-size: 1.2rem;">✅ FAIBLE</strong>
+                        <p style="margin-top: 10px;">Conditions normales, surveillance standard recommandée.</p>
+                    </div>
+                    <div
+                        style="background: rgba(255, 215, 0, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #ffd700;">
+                        <strong style="color: #ffd700; font-size: 1.2rem;">🟡 MODÉRÉ</strong>
+                        <p style="margin-top: 10px;">Vigilance accrue nécessaire, surveiller l'évolution.</p>
+                    </div>
+                    <div
+                        style="background: rgba(255, 140, 0, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #ff8c00;">
+                        <strong style="color: #ff8c00; font-size: 1.2rem;">⚠️ ÉLEVÉ</strong>
+                        <p style="margin-top: 10px;">Conditions favorables aux incendies, mesures préventives urgentes.
+                        </p>
+                    </div>
+                    <div
+                        style="background: rgba(255, 59, 59, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #ff3b3b;">
+                        <strong style="color: #ff3b3b; font-size: 1.2rem;">🚨 CRITIQUE</strong>
+                        <p style="margin-top: 10px;">Danger extrême, alerter les autorités immédiatement.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-section" style="text-align: center;">
+                <h2>🚀 Commencer Maintenant</h2>
+                <p>Testez ForestGuard AI et contribuez à la protection de nos forêts</p>
+                <a href="/predict" class="btn btn-primary" style="margin-top: 20px; display: inline-block;">
+                    Lancer une Analyse
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 8 + 's';
+            particlesContainer.appendChild(particle);
+        }
+
+        // Animation au scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.about-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'all 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+
+</html>

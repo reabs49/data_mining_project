@@ -1,0 +1,540 @@
+<!-- templates/predict.html -->
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prédiction - ForestGuard AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/predict.css') }}">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-logo">🔥 ForestGuard AI</a>
+        <ul class="nav-links">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/predict">Prédiction</a></li>
+            <li><a href="/about">À propos</a></li>
+        </ul>
+    </nav>
+
+    <div class="fire-particles" id="particles"></div>
+
+    <div class="predict-container">
+        <div class="predict-bg"></div>
+        <div class="predict-header">
+            <div class="predict-header">
+                <h1 class="predict-title"> Analyse des Risques d'Incendie</h1>
+                <p class="predict-subtitle">Entrez les données environnementales pour évaluer le risque</p>
+                <button onclick="fillExampleData()" class="btn btn-secondary" style="margin-top: 20px;">
+                    ⚡ Remplir avec un Exemple
+                </button>
+            </div>
+
+            <div class="prediction-layout">
+                <!-- Formulaire -->
+                <div class="form-container">
+                    <form id="predictionForm" class="prediction-form">
+                        <!-- SECTION 1: Propriétés du Sol -->
+                        <div class="form-section">
+                            <h3 class="section-header">🌍 Propriétés du Sol</h3>
+
+                            <div class="form-group">
+                                <label for="COARSE">
+                                    <span class="label-icon">🪨</span>
+                                    COARSE - Texture Grossière du Sol
+                                </label>
+                                <input type="number" id="COARSE" name="COARSE" step="any" required
+                                    placeholder="Ex: 7.55">
+                                <small class="help-text">Particules grossières du sol (0-100)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="CLAY">
+                                    <span class="label-icon">🧱</span>
+                                    CLAY - Argile
+                                </label>
+                                <input type="number" id="CLAY" name="CLAY" step="any" required placeholder="Ex: 13.37">
+                                <small class="help-text">Pourcentage d'argile (0-100)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="TEXTURE_USDA">
+                                    <span class="label-icon">📊</span>
+                                    TEXTURE_USDA - Classification Texture USDA
+                                </label>
+                                <input type="number" id="TEXTURE_USDA" name="TEXTURE_USDA" step="any" required
+                                    placeholder="Ex: 9.25">
+                                <small class="help-text">Classification de texture selon USDA (0-12)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="CEC_CLAY">
+                                    <span class="label-icon">⚡</span>
+                                    CEC_CLAY - Capacité d'Échange Cationique
+                                </label>
+                                <input type="number" id="CEC_CLAY" name="CEC_CLAY" step="any" required
+                                    placeholder="Ex: 44.54">
+                                <small class="help-text">CEC de l'argile (cmol/kg)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="TEB">
+                                    <span class="label-icon">🔋</span>
+                                    TEB - Total Exchangeable Bases
+                                </label>
+                                <input type="number" id="TEB" name="TEB" step="any" required placeholder="Ex: 23.43">
+                                <small class="help-text">Bases échangeables totales (cmol/kg)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ALUM_SAT">
+                                    <span class="label-icon">🧪</span>
+                                    ALUM_SAT - Saturation en Aluminium
+                                </label>
+                                <input type="number" id="ALUM_SAT" name="ALUM_SAT" step="any" required
+                                    placeholder="Ex: -0.78">
+                                <small class="help-text">Saturation en aluminium (%)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ESP">
+                                    <span class="label-icon">💧</span>
+                                    ESP - Exchangeable Sodium Percentage
+                                </label>
+                                <input type="number" id="ESP" name="ESP" step="any" required placeholder="Ex: 2.40">
+                                <small class="help-text">Pourcentage de sodium échangeable (%)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="TCARBON_EQ">
+                                    <span class="label-icon">🌿</span>
+                                    TCARBON_EQ - Carbone Total Équivalent
+                                </label>
+                                <input type="number" id="TCARBON_EQ" name="TCARBON_EQ" step="any" required
+                                    placeholder="Ex: 6.69">
+                                <small class="help-text">Carbone organique total (g/kg)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="GYPSUM">
+                                    <span class="label-icon">⚪</span>
+                                    GYPSUM - Gypse
+                                </label>
+                                <input type="number" id="GYPSUM" name="GYPSUM" step="any" required
+                                    placeholder="Ex: 1.07">
+                                <small class="help-text">Contenu en gypse (g/kg)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="ELEC_COND">
+                                    <span class="label-icon">⚡</span>
+                                    ELEC_COND - Conductivité Électrique
+                                </label>
+                                <input type="number" id="ELEC_COND" name="ELEC_COND" step="any" required
+                                    placeholder="Ex: 0.22">
+                                <small class="help-text">Conductivité électrique (dS/m)</small>
+                                <div class="input-indicator"></div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 2: Données Géographiques -->
+                        <div class="form-section">
+                            <h3 class="section-header">📍 Données Géographiques</h3>
+
+                            <div class="form-group">
+                                <label for="elevation">
+                                    <span class="label-icon">⛰️</span>
+                                    Altitude (m)
+                                </label>
+                                <input type="number" id="elevation" name="elevation" step="any" required
+                                    placeholder="Ex: 517.59">
+                                <small class="help-text">Altitude du terrain en mètres</small>
+                                <div class="input-indicator"></div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 3: Données Climatiques -->
+                        <div class="form-section">
+                            <h3 class="section-header">🌡️ Données Climatiques</h3>
+
+                            <div class="form-group">
+                                <label for="tmin_cool_wet">
+                                    <span class="label-icon">❄️</span>
+                                    Température Min - Saison Froide/Humide (°C)
+                                </label>
+                                <input type="number" id="tmin_cool_wet" name="tmin_cool_wet" step="any" required
+                                    placeholder="Ex: 6.70">
+                                <small class="help-text">Température minimale pendant la saison froide et humide</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tmax_hot_dry">
+                                    <span class="label-icon">🌞</span>
+                                    Température Max - Saison Chaude/Sèche (°C)
+                                </label>
+                                <input type="number" id="tmax_hot_dry" name="tmax_hot_dry" step="any" required
+                                    placeholder="Ex: 40.37">
+                                <small class="help-text">Température maximale pendant la saison chaude et sèche</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="tmax_spring_transition">
+                                    <span class="label-icon">🌸</span>
+                                    Température Max - Transition Printemps (°C)
+                                </label>
+                                <input type="number" id="tmax_spring_transition" name="tmax_spring_transition"
+                                    step="any" required placeholder="Ex: 30.73">
+                                <small class="help-text">Température maximale durant la transition printanière</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="prec_hot_dry">
+                                    <span class="label-icon">☀️</span>
+                                    Précipitations - Saison Chaude/Sèche (mm)
+                                </label>
+                                <input type="number" id="prec_hot_dry" name="prec_hot_dry" step="any" required
+                                    placeholder="Ex: 2.65">
+                                <small class="help-text">Précipitations pendant la saison chaude et sèche</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="prec_cool_wet">
+                                    <span class="label-icon">🌧️</span>
+                                    Précipitations - Saison Froide/Humide (mm)
+                                </label>
+                                <input type="number" id="prec_cool_wet" name="prec_cool_wet" step="any" required
+                                    placeholder="Ex: 10.91">
+                                <small class="help-text">Précipitations pendant la saison froide et humide</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="prec_spring_transition">
+                                    <span class="label-icon">🌱</span>
+                                    Précipitations - Transition Printemps (mm)
+                                </label>
+                                <input type="number" id="prec_spring_transition" name="prec_spring_transition"
+                                    step="any" required placeholder="Ex: 6.53">
+                                <small class="help-text">Précipitations durant la transition printanière</small>
+                                <div class="input-indicator"></div>
+                            </div>
+                        </div>
+
+                        <!-- SECTION 4: Texture du Sol (SOTER) - One-Hot Encoding -->
+                        <div class="form-section">
+                            <h3 class="section-header">🔬 Classification SOTER (Texture du Sol)</h3>
+
+                            <div class="form-group">
+                                <label for="TEXTURE_SOTER">
+                                    <span class="label-icon">🏔️</span>
+                                    Type de Texture du Sol
+                                </label>
+                                <select id="TEXTURE_SOTER" name="TEXTURE_SOTER" class="texture-select" required>
+                                    <option value="">-- Sélectionnez la texture --</option>
+                                    <option value="C">🪨 Texture Grossière (Coarse)</option>
+                                    <option value="F">💎 Texture Fine (Fine)</option>
+                                    <option value="M">⚖️ Texture Moyenne (Medium)</option>
+                                </select>
+                                <small class="help-text">Sélectionnez le type de texture prédominant du sol</small>
+                                <div class="input-indicator"></div>
+                            </div>
+
+                            <!-- Champs cachés pour stocker les valeurs one-hot -->
+                            <input type="hidden" id="TEXTURE_SOTER_C" name="TEXTURE_SOTER_C" value="0">
+                            <input type="hidden" id="TEXTURE_SOTER_F" name="TEXTURE_SOTER_F" value="0">
+                            <input type="hidden" id="TEXTURE_SOTER_M" name="TEXTURE_SOTER_M" value="0">
+
+                            <!-- Affichage visuel des valeurs (optionnel, pour debug) -->
+                            <div class="soter-values" id="soterValues"
+                                style="display: none; margin-top: 15px; padding: 15px; background: rgba(255, 140, 0, 0.1); border-radius: 10px;">
+                                <p style="margin: 0; color: #999; font-size: 0.9rem;">
+                                    <strong>Encodage One-Hot :</strong><br>
+                                    TEXTURE_SOTER_C: <span id="display_C">0</span> |
+                                    TEXTURE_SOTER_F: <span id="display_F">0</span> |
+                                    TEXTURE_SOTER_M: <span id="display_M">0</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-submit" id="submitBtn">
+                            <span class="btn-text">🚀 Analyser le Risque</span>
+                            <span class="btn-loader" style="display: none;">
+                                <span class="spinner"></span> Analyse...
+                            </span>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Résultats -->
+                <div class="results-container" id="resultsContainer" style="display: none;">
+                    <div class="result-card">
+                        <div class="result-icon" id="resultIcon">🔥</div>
+                        <h2 class="result-title" id="resultTitle">Analyse en cours...</h2>
+
+                        <div class="risk-meter">
+                            <div class="risk-bar">
+                                <div class="risk-fill" id="riskFill"></div>
+                            </div>
+                            <div class="risk-labels">
+                                <span>Faible</span>
+                                <span>Modéré</span>
+                                <span>Élevé</span>
+                                <span>Critique</span>
+                            </div>
+                        </div>
+
+                        <div class="risk-score" id="riskScore">
+                            <span class="score-label">Score de Risque</span>
+                            <span class="score-value" id="scoreValue">0%</span>
+                        </div>
+
+                        <div class="risk-message" id="riskMessage">
+                            En attente des résultats...
+                        </div>
+
+                        <div class="recommendations" id="recommendations">
+                            <h3>📋 Recommandations</h3>
+                            <ul id="recommendationsList"></ul>
+                        </div>
+
+                        <button class="btn btn-secondary" onclick="resetForm()">
+                            🔄 Nouvelle Analyse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Particules
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particlesContainer.appendChild(particle);
+            }
+            // Gestion du One-Hot Encoding pour TEXTURE_SOTER
+            document.getElementById('TEXTURE_SOTER').addEventListener('change', function () {
+                const selectedValue = this.value;
+
+                // Réinitialiser tous à 0
+                document.getElementById('TEXTURE_SOTER_C').value = 0;
+                document.getElementById('TEXTURE_SOTER_F').value = 0;
+                document.getElementById('TEXTURE_SOTER_M').value = 0;
+
+                // Mettre à 1 celui qui est sélectionné
+                if (selectedValue === 'C') {
+                    document.getElementById('TEXTURE_SOTER_C').value = 1;
+                } else if (selectedValue === 'F') {
+                    document.getElementById('TEXTURE_SOTER_F').value = 1;
+                } else if (selectedValue === 'M') {
+                    document.getElementById('TEXTURE_SOTER_M').value = 1;
+                }
+
+                // Afficher les valeurs (optionnel - pour debug)
+                document.getElementById('display_C').textContent = document.getElementById('TEXTURE_SOTER_C').value;
+                document.getElementById('display_F').textContent = document.getElementById('TEXTURE_SOTER_F').value;
+                document.getElementById('display_M').textContent = document.getElementById('TEXTURE_SOTER_M').value;
+
+                // Afficher le debug box
+                const soterValues = document.getElementById('soterValues');
+                if (selectedValue) {
+                    soterValues.style.display = 'block';
+                } else {
+                    soterValues.style.display = 'none';
+                }
+
+                // Animation de l'indicateur
+                const indicator = this.nextElementSibling.nextElementSibling; // .input-indicator
+                if (indicator && selectedValue) {
+                    indicator.style.width = '100%';
+                    indicator.style.background = '#4caf50';
+                }
+            });
+            // Soumission du formulaire avec les 20 features
+            document.getElementById('predictionForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('submitBtn');
+                const btnText = submitBtn.querySelector('.btn-text');
+                const btnLoader = submitBtn.querySelector('.btn-loader');
+
+                // Afficher le loader
+                btnText.style.display = 'none';
+                btnLoader.style.display = 'inline-flex';
+                submitBtn.disabled = true;
+
+                // Récupérer les 20 features dans le bon ordre
+                const formData = {
+                    COARSE: parseFloat(document.getElementById('COARSE').value),
+                    CLAY: parseFloat(document.getElementById('CLAY').value),
+                    TEXTURE_USDA: parseFloat(document.getElementById('TEXTURE_USDA').value),
+                    CEC_CLAY: parseFloat(document.getElementById('CEC_CLAY').value),
+                    TEB: parseFloat(document.getElementById('TEB').value),
+                    ALUM_SAT: parseFloat(document.getElementById('ALUM_SAT').value),
+                    ESP: parseFloat(document.getElementById('ESP').value),
+                    TCARBON_EQ: parseFloat(document.getElementById('TCARBON_EQ').value),
+                    GYPSUM: parseFloat(document.getElementById('GYPSUM').value),
+                    ELEC_COND: parseFloat(document.getElementById('ELEC_COND').value),
+                    elevation: parseFloat(document.getElementById('elevation').value),
+                    tmin_cool_wet: parseFloat(document.getElementById('tmin_cool_wet').value),
+                    tmax_hot_dry: parseFloat(document.getElementById('tmax_hot_dry').value),
+                    tmax_spring_transition: parseFloat(document.getElementById('tmax_spring_transition').value),
+                    prec_hot_dry: parseFloat(document.getElementById('prec_hot_dry').value),
+                    prec_cool_wet: parseFloat(document.getElementById('prec_cool_wet').value),
+                    prec_spring_transition: parseFloat(document.getElementById('prec_spring_transition').value),
+                    TEXTURE_SOTER_C: parseFloat(document.getElementById('TEXTURE_SOTER_C').value),
+                    TEXTURE_SOTER_F: parseFloat(document.getElementById('TEXTURE_SOTER_F').value),
+                    TEXTURE_SOTER_M: parseFloat(document.getElementById('TEXTURE_SOTER_M').value)
+                };
+
+                try {
+                    const response = await fetch('/api/predict', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formData)
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        displayResults(result);
+                    } else {
+                        alert('Erreur: ' + result.error);
+                    }
+                } catch (error) {
+                    alert('Erreur de connexion: ' + error);
+                } finally {
+                    btnText.style.display = 'inline';
+                    btnLoader.style.display = 'none';
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function displayResults(result) {
+                const container = document.getElementById('resultsContainer');
+                const icon = document.getElementById('resultIcon');
+                const title = document.getElementById('resultTitle');
+                const riskFill = document.getElementById('riskFill');
+                const scoreValue = document.getElementById('scoreValue');
+                const message = document.getElementById('riskMessage');
+                const recList = document.getElementById('recommendationsList');
+
+                // Icônes selon le niveau
+                const icons = {
+                    'CRITIQUE': '🚨',
+                    'ÉLEVÉ': '⚠️',
+                    'MODÉRÉ': '🟡',
+                    'FAIBLE': '✅'
+                };
+
+                icon.textContent = icons[result.risk_level] || '🔥';
+                title.textContent = `Risque ${result.risk_level}`;
+                title.style.color = result.risk_color;
+
+                riskFill.style.width = result.risk_score + '%';
+                riskFill.style.background = result.risk_color;
+
+                scoreValue.textContent = result.risk_score + '%';
+                scoreValue.style.color = result.risk_color;
+
+                message.textContent = result.message;
+                message.style.borderLeftColor = result.risk_color;
+
+                // Recommandations
+                recList.innerHTML = '';
+                result.recommendations.forEach(rec => {
+                    const li = document.createElement('li');
+                    li.textContent = rec;
+                    recList.appendChild(li);
+                });
+
+                // Afficher les résultats avec animation
+                container.style.display = 'block';
+                setTimeout(() => container.classList.add('show'), 100);
+
+                // Scroll vers les résultats
+                container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            function resetForm() {
+                document.getElementById('predictionForm').reset();
+                const container = document.getElementById('resultsContainer');
+                container.classList.remove('show');
+                setTimeout(() => container.style.display = 'none', 300);
+            }
+
+            // Validation en temps réel
+            document.querySelectorAll('input[type="number"]').forEach(input => {
+                input.addEventListener('input', function () {
+                    const indicator = this.nextElementSibling;
+                    if (this.value && this.checkValidity()) {
+                        indicator.style.background = '#4caf50';
+                    } else if (this.value) {
+                        indicator.style.background = '#ff3b3b';
+                    } else {
+                        indicator.style.background = '';
+                    }
+                });
+            });
+
+            // Fonction pour remplir avec des données d'exemple
+            function fillExampleData() {
+                // Exemple avec risque ÉLEVÉ
+                document.getElementById('COARSE').value = 7.55;
+                document.getElementById('CLAY').value = 13.37;
+                document.getElementById('TEXTURE_USDA').value = 9.25;
+                document.getElementById('CEC_CLAY').value = 44.54;
+                document.getElementById('TEB').value = 23.43;
+                document.getElementById('ALUM_SAT').value = -0.78;
+                document.getElementById('ESP').value = 2.40;
+                document.getElementById('TCARBON_EQ').value = 6.69;
+                document.getElementById('GYPSUM').value = 1.07;
+                document.getElementById('ELEC_COND').value = 0.22;
+                document.getElementById('elevation').value = 517.59;
+                document.getElementById('tmin_cool_wet').value = 6.70;
+                document.getElementById('tmax_hot_dry').value = 40.37;
+                document.getElementById('tmax_spring_transition').value = 30.73;
+                document.getElementById('prec_hot_dry').value = 2.65;
+                document.getElementById('prec_cool_wet').value = 10.91;
+                document.getElementById('prec_spring_transition').value = 6.53;
+
+                // Sélectionner la texture (déclenche automatiquement le one-hot encoding)
+                document.getElementById('TEXTURE_SOTER').value = 'M';
+                document.getElementById('TEXTURE_SOTER').dispatchEvent(new Event('change'));
+
+                // Animation visuelle pour montrer que c'est rempli
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    const indicator = input.nextElementSibling.nextElementSibling;
+                    if (indicator && indicator.classList.contains('input-indicator')) {
+                        indicator.style.width = '100%';
+                        indicator.style.background = '#4caf50';
+                    }
+                });
+
+                // Message de confirmation
+                alert('✅ Formulaire rempli avec un exemple de test !');
+            }
+        </script>
+</body>
+
+</html>

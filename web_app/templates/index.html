@@ -1,0 +1,182 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ForestGuard AI - Détection Incendies Intelligence Artificielle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔥</text></svg>">
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="/" class="nav-logo">🔥 ForestGuard AI</a>
+        <ul class="nav-links">
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/predict">Prédiction</a></li>
+            <li><a href="/about">À propos</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="logo-fire">🔥</div>
+            <h1>ForestGuard AI</h1>
+            <p class="subtitle">Système Intelligent de Détection des Incendies de Forêt</p>
+            <p class="subtitle" style="font-size: 1.1rem; margin-bottom: 40px;">
+                Propulsé par Random Forest | Intelligence Artificielle 
+            </p>
+            <div class="cta-buttons">
+                <a href="/predict" class="btn btn-primary">Lancer une Prédiction</a>
+                <a href="/about" class="btn btn-secondary">En savoir plus</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Technologie de Pointe</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>IA Machine Learning Supervisée</h3>
+                       <p>Algorithme Random Forest optimisé pour une précision optimale dans la détection des risques d'incendie.</p>
+
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Analyse en Temps Réel</h3>
+                    <p>Traitement instantané des données météorologiques et environnementales pour une réponse rapide.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Haute Précision</h3>
+                    <p>Modèle entraîné sur des milliers de données historiques pour une prédiction fiable et précise.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🌡️</div>
+                    <h3>Multi-Paramètres</h3>
+                    <p>Analyse de 20 paramètres : propriétés du sol, altitude, données climatiques et classification
+                        SOTER pour une évaluation complète.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📱</div>
+                    <h3>Interface Intuitive</h3>
+                    <p>Design moderne et responsive, accessible sur tous les appareils pour une utilisation simplifiée.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Alertes Intelligentes</h3>
+                    <p>Système de recommandations adaptatif selon le niveau de risque détecté par l'algorithme.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="container">
+            <h2 class="section-title">Performance du Système</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">93%</div>
+                    <div class="stat-label">Recall</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">&lt;2s</div>
+                    <div class="stat-label">Temps Réponse</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Prédictions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Surveillance</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="features" style="background: rgba(255, 140, 0, 0.03);">
+        <div class="container">
+            <h2 class="section-title">Comment ça fonctionne ?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">1️⃣</div>
+                    <h3>Collecte des Données</h3>
+                    <p>L'utilisateur entre les paramètres météorologiques et environnementaux actuels de la zone
+                        forestière.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">2️⃣</div>
+                    <h3>Traitement IA</h3>
+                    <p>Notre modèle hybride Random Forest pour l'analyse les données et le calcul du niveau de risque.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">3️⃣</div>
+                    <h3>Résultat Instantané</h3>
+                    <p>Vous recevez une évaluation détaillée avec des recommandations d'action personnalisées.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Final -->
+    <section class="hero" style="height: 60vh;">
+        <div class="hero-content">
+            <h2 class="section-title" style="margin-bottom: 30px;">Prêt à protéger nos forêts ?</h2>
+            <p class="subtitle" style="margin-bottom: 40px;">
+                Utilisez ForestGuard AI dès maintenant pour prévenir les catastrophes
+            </p>
+            <a href="/predict" class="btn btn-primary" style="font-size: 1.3rem; padding: 20px 50px;">
+                🚀 Commencer l'Analyse
+            </a>
+        </div>
+    </section>
+
+    <script>
+
+        // Animation des stats au scroll
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .stat-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(50px)';
+            card.style.transition = 'all 0.6s ease';
+            observer.observe(card);
+        });
+    </script>
+</body>
+
+</html>
