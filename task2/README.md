@@ -16,7 +16,7 @@ It focuses on training, testing, and evaluating machine learning models using th
 | `test1_3DT.py` | another customized (Decision trees) |
 | `test.py` | re-resting the customized (RF) with prameters |
 | `investigate.ipynb` | here we will use the results of the bayesian optimization (the best ones) saved in a csv file and select a kinda good ones |
-| `work.ipynb` | you will also find a file named work.ipynb in the task3 directory that includes the KNN and decision trees and random forest used on the (58K row data) for both scikit_learn and from scratch|
+| `travail.ipynb` | you will also find a file named work.ipynb in the task3 directory that includes the KNN and decision trees and random forest used on the (58K row data) for both scikit_learn and from scratch|
 
 ---
 
