@@ -34,3 +34,5 @@ The overall objective of this project is to build a **fire detection system** us
 - Apply some machine learning to try to predict the presence of fire
 
 ---
+
+(YOU CAN ignore the files here and enter the directories)
